@@ -1,37 +1,54 @@
-def chunk_text(
-    text,
-    chunk_size=800,
-    overlap=150
-):
+from langchain_experimental.text_splitter import (
+    SemanticChunker
+)
 
-    paragraphs = text.split("\n")
+from langchain_core.documents import Document
 
-    chunks = []
+from langchain.embeddings.base import (
+    Embeddings
+)
 
-    current_chunk = ""
+from app.services.embedding_service import (
+    model
+)
 
-    for para in paragraphs:
+class CustomEmbedding(Embeddings):
 
-        para = para.strip()
+    def embed_documents(
+        self,
+        texts
+    ):
 
-        if not para:
-            continue
+        embeddings = model.encode(texts)
 
-        if len(current_chunk) + len(para) < chunk_size:
+        return embeddings.tolist()
 
-            current_chunk += "\n" + para
+    def embed_query(
+        self,
+        text
+    ):
 
-        else:
+        embedding = model.encode(text)
 
-            chunks.append(
-                current_chunk.strip()
-            )
+        return embedding.tolist()
 
-            overlap_text = current_chunk[-overlap:]
+embedding_model = CustomEmbedding()
 
-            current_chunk = overlap_text + "\n" + para
+semantic_chunker = SemanticChunker(
+    embedding_model
+)
 
-    if current_chunk:
-        chunks.append(current_chunk.strip())
+def chunk_text(text):
 
-    return chunks
+    docs = [
+        Document(page_content=text)
+    ]
+
+    chunks = semantic_chunker.split_documents(
+        docs
+    )
+
+    return [
+        chunk.page_content
+        for chunk in chunks
+    ]
