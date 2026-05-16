@@ -1,17 +1,9 @@
 from datetime import datetime
 from bson import ObjectId
 
-from app.services.retrieval_service import (
-    retrieve_relevant_chunks
-)
-
-from app.services.gemini_service import (
-    generate_answer
-)
-
-from app.database.mongodb import (
-    messages_collection
-)
+from app.services.retrieval_service import retrieve_relevant_chunks
+from app.services.gemini_service import generate_answer
+from app.database.mongodb import messages_collection
 
 async def process_chat(
     conversation_id,
@@ -20,24 +12,18 @@ async def process_chat(
 ):
 
     # CONVERSATION MEMORY
-
     previous_messages = []
 
     cursor = messages_collection.find(
-        {
-            "conversation_id": conversation_id
-        }
+        {"conversation_id": conversation_id}
     ).sort("created_at", -1).limit(3)
 
     async for msg in cursor:
-
         previous_messages.append(
             f"User: {msg['user_message']}\nAI: {msg['ai_response']}"
         )
 
-    conversation_context = "\n".join(
-        previous_messages
-    )
+    conversation_context = "\n".join(previous_messages)
 
     enhanced_query = f"""
 Conversation History:
@@ -57,30 +43,26 @@ Current Question:
         for chunk in retrieved_chunks
     ])
 
+    # ✅ now passing conversation_context here too
     ai_response = generate_answer(
         user_message,
-        context
+        context,
+        conversation_context
     )
 
     chat_document = {
         "conversation_id": conversation_id,
         "user_id": current_user["user_id"],
-
         "user_message": user_message,
-
         "ai_response": ai_response,
-
         "sources": list(set([
             chunk["source"]
             for chunk in retrieved_chunks
         ])),
-
         "created_at": datetime.utcnow()
     }
 
-    await messages_collection.insert_one(
-        chat_document
-    )
+    await messages_collection.insert_one(chat_document)
 
     return {
         "success": True,
