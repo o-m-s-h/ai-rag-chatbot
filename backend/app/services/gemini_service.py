@@ -7,7 +7,12 @@ client = OpenAI(
     api_key=settings.OPENROUTER_API_KEY
 )
 
-def generate_answer(question, context):
+def generate_answer(question, context, conversation_context=""):
+
+    history_section = f"""
+    Conversation History (for context resolution):
+    {conversation_context}
+    """ if conversation_context.strip() else ""
 
     prompt = f"""
 You are an AI assistant for document question answering.
@@ -18,6 +23,9 @@ RULES:
    "I could not find that information in the uploaded documents."
 3. Do not hallucinate.
 4. Keep answers clear and structured.
+
+History:
+{history_section}
 
 Context:
 {context}
