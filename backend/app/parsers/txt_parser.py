@@ -1,9 +1,3 @@
-def parse_txt(file_path):
+def parse_txt(file_bytes):
 
-    with open(
-        file_path,
-        "r",
-        encoding="utf-8"
-    ) as file:
-
-        return file.read()
+    return file_bytes.decode("utf-8")
