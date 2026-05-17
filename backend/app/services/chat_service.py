@@ -39,7 +39,7 @@ Current Question:
     )
 
     context = "\n\n".join([
-        chunk["content"]
+        chunk.page_content
         for chunk in retrieved_chunks
     ])
 
@@ -56,7 +56,7 @@ Current Question:
         "user_message": user_message,
         "ai_response": ai_response,
         "sources": list(set([
-            chunk["source"]
+            chunk.metadata["source"]
             for chunk in retrieved_chunks
         ])),
         "created_at": datetime.utcnow()
