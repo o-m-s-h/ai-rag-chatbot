@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #0f172a;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+@keyframes aurora1 {
+    0% {
+        transform: translate(0px, 0px) scale(1);
+    }
+
+    25% {
+        transform: translate(120px, 60px) scale(1.15);
+    }
+
+    50% {
+        transform: translate(220px, -80px) scale(1.3);
+    }
+
+    75% {
+        transform: translate(-100px, 100px) scale(1.1);
+    }
+
+    100% {
+        transform: translate(0px, 0px) scale(1);
+    }
+}
+
+@keyframes aurora2 {
+    0% {
+        transform: translate(0px, 0px) scale(1);
+    }
+
+    25% {
+        transform: translate(-150px, 80px) scale(1.2);
+    }
+
+    50% {
+        transform: translate(-250px, -120px) scale(1.35);
+    }
+
+    75% {
+        transform: translate(100px, 60px) scale(1.1);
+    }
+
+    100% {
+        transform: translate(0px, 0px) scale(1);
+    }
+}
+
+@keyframes aurora3 {
+    0% {
+        transform: translate(0px, 0px) scale(1);
+    }
+
+    25% {
+        transform: translate(80px, -120px) scale(1.15);
+    }
+
+    50% {
+        transform: translate(200px, 50px) scale(1.25);
+    }
+
+    75% {
+        transform: translate(-120px, -50px) scale(1.08);
+    }
+
+    100% {
+        transform: translate(0px, 0px) scale(1);
+    }
+}
+
+.animate-aurora1 {
+    animation: aurora1 12s ease-in-out infinite;
+}
+
+.animate-aurora2 {
+    animation: aurora2 15s ease-in-out infinite;
+}
+
+.animate-aurora3 {
+    animation: aurora3 18s ease-in-out infinite;
+}
+
