@@ -24,6 +24,10 @@ import {
 } from "../services/conversationService";
 
 import {
+    getConversations
+} from "../services/conversationService";
+
+import {
     sendMessage,
     getMessages
 } from "../services/chatService";
@@ -55,6 +59,28 @@ const ChatPage = () => {
     const fileInputRef = useRef();
 
     const bottomRef = useRef();
+    
+    useEffect(() => {
+
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        const loadConversations = async () => {
+
+            try {
+
+                const data =
+                    await fetchConversations();
+            } catch (error) {
+
+                console.error(error);
+            }
+        };
+
+        loadConversations();
+
+    }, []);
 
     useEffect(() => {
 

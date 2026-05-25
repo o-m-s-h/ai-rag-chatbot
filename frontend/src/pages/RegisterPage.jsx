@@ -4,6 +4,8 @@ import { useNavigate, Link } from "react-router-dom";
 
 import { registerUser } from "../services/authService";
 
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 const RegisterPage = () => {
 
     const navigate = useNavigate();
@@ -91,10 +93,6 @@ const RegisterPage = () => {
                     <h1 className="text-4xl font-extrabold text-gray-800">
                         Create Account
                     </h1>
-
-                    <p className="text-gray-600 mt-3">
-                        Start your AI-RAG journey today
-                    </p>
 
                 </div>
 

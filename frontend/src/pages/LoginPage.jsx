@@ -6,6 +6,8 @@ import { loginUser } from "../services/authService";
 
 import useAuth from "../hooks/useAuth";
 
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+
 const LoginPage = () => {
 
     const navigate = useNavigate();
@@ -20,6 +22,8 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
 
     const [error, setError] = useState("");
+
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
 
@@ -40,6 +44,8 @@ const LoginPage = () => {
             setError("");
 
             const data = await loginUser(formData);
+
+            localStorage.setItem("token", data.token);
 
             login(
                 data.token,
@@ -102,10 +108,6 @@ const LoginPage = () => {
                         Welcome Back
                     </h1>
 
-                    <p className="text-gray-600 mt-3">
-                        Login to continue your AI-RAG experience
-                    </p>
-
                 </div>
 
                 <form
@@ -122,6 +124,7 @@ const LoginPage = () => {
                         className="
                         p-4 rounded-2xl
                         bg-white/50
+                        text-black
                         border border-white/40
                         outline-none
                         focus:ring-2 focus:ring-blue-400
@@ -130,22 +133,46 @@ const LoginPage = () => {
                         "
                     />
 
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Enter Password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="
-                        p-4 rounded-2xl
-                        bg-white/50
-                        border border-white/40
-                        outline-none
-                        focus:ring-2 focus:ring-cyan-400
-                        transition-all
-                        placeholder:text-gray-500
-                        "
-                    />
+                    <div className="relative">
+
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="Enter Password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="
+                            w-full
+                            p-4 rounded-2xl
+                            bg-white/70
+                            text-black
+                            border border-white/40
+                            outline-none
+                            focus:ring-2 focus:ring-cyan-400
+                            transition-all
+                            placeholder:text-gray-500
+                            pr-14
+                            "
+                        />
+
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="
+                            absolute right-4 top-1/2
+                            -translate-y-1/2
+                            text-gray-600
+                            hover:text-black
+                            "
+                        >
+                            {
+                                showPassword
+                                ? <EyeOff size={20} />
+                                : <Eye size={20} />
+                            }
+                        </button>
+
+                    </div>
 
                     {
                         error && (
@@ -167,13 +194,25 @@ const LoginPage = () => {
                         font-semibold
                         shadow-lg
                         transition-all duration-300
+                        disabled:opacity-70
                         "
                     >
-                        {
-                            loading
-                            ? "Logging in..."
-                            : "Login"
-                        }
+
+                        <div className="flex items-center justify-center gap-2 w-full">
+
+                            {
+                                loading ? (
+                                    <>
+                                        <Loader2 className="animate-spin" size={20} />
+                                        <span>Logging In...</span>
+                                    </>
+                                ) : (
+                                    <span>Login</span>
+                                )
+                            }
+
+                        </div>
+
                     </button>
 
                 </form>
