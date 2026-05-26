@@ -1,4 +1,6 @@
 import { FaPlus } from "react-icons/fa";
+import { IoArrowUp } from "react-icons/io5";
+
 import Sidebar from "./Sidebar";
 import NewChatModal from "./NewChatModal";
 import ChatMessage from "./ChatMessage";
@@ -17,7 +19,8 @@ const ChatLayout = ({
     handleCreateChat
 }) => {
     return (
-        <div className="h-screen bg-[#0f172a] text-white flex">
+
+        <div className="h-screen bg-[#212121] text-white flex overflow-hidden">
 
             <Sidebar
                 onNewChat={() =>
@@ -25,13 +28,15 @@ const ChatLayout = ({
                 }
             />
 
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col relative">
 
+                {/* Chat Area */}
                 <div
                     className="
                         flex-1
                         overflow-y-auto
-                        px-10
+                        px-4
+                        md:px-10
                         py-8
                     "
                 >
@@ -43,113 +48,203 @@ const ChatLayout = ({
                                 className="
                                     h-full
                                     flex
+                                    flex-col
                                     items-center
                                     justify-center
-                                    text-gray-500
-                                    text-2xl
+                                    text-center
                                 "
                             >
-                                Ask anything...
+
+                                <h1
+                                    className="
+                                        text-4xl
+                                        md:text-5xl
+                                        font-semibold
+                                        text-gray-200
+                                        mb-4
+                                    "
+                                >
+                                    What can I help with?
+                                </h1>
+
+                                <p
+                                    className="
+                                        text-gray-500
+                                        text-lg
+                                    "
+                                >
+                                    Ask anything and upload files.
+                                </p>
+
                             </div>
                         )
                     }
 
-                    {
-                        messages.map(
-                            (msg, index) => (
+                    {/* Messages */}
+                    <div
+                        className="
+                            max-w-4xl
+                            mx-auto
+                            flex
+                            flex-col
+                            gap-6
+                        "
+                    >
 
-                                <ChatMessage
-                                    key={index}
-                                    role={msg.role}
-                                    content={msg.content}
-                                    sources={msg.sources}
-                                />
+                        {
+                            messages.map(
+                                (msg, index) => (
+
+                                    <ChatMessage
+                                        key={index}
+                                        role={msg.role}
+                                        content={msg.content}
+                                        sources={msg.sources}
+                                    />
+                                )
                             )
-                        )
-                    }
+                        }
 
-                    {
-                        loading && (
+                        {
+                            loading && (
 
-                            <div className="
-                                text-gray-400
-                                mt-4
-                            ">
-                                AI is thinking...
-                            </div>
-                        )
-                    }
+                                <div
+                                    className="
+                                        text-gray-400
+                                        text-sm
+                                        animate-pulse
+                                        px-2
+                                    "
+                                >
+                                    AI is thinking...
+                                </div>
+                            )
+                        }
 
-                    <div ref={bottomRef} />
+                        <div ref={bottomRef} />
+
+                    </div>
 
                 </div>
 
+                {/* Input Section */}
                 <div
                     className="
-                        p-5
-                        border-t
-                        border-gray-800
-                        flex
-                        gap-3
+                        w-full
+                        px-4
+                        md:px-8
+                        pb-6
                     "
                 >
 
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        hidden
-                        onChange={handleUpload}
-                    />
-
-                    <button
-                        onClick={() =>
-                            fileInputRef.current.click()
-                        }
+                    {/* PILL SHAPED BAR */}
+                    <div
                         className="
-                            bg-[#1f2937]
-                            px-5
-                            rounded-lg
-                            hover:bg-[#374151]
+                            max-w-4xl
+                            mx-auto
+                            bg-[#2f2f2f]
+                            border
+                            border-[#3a3a3a]
+                            rounded-full
+                            px-4
+                            py-3
+                            flex
+                            items-center
+                            gap-3
+                            shadow-lg
                         "
                     >
-                        <FaPlus />
-                    </button>
 
-                    <input
-                        type="text"
-                        placeholder="Ask anything..."
-                        value={message}
-                        onChange={(e) =>
-                            setMessage(
-                                e.target.value
-                            )
-                        }
-                        onKeyDown={(e) => {
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            hidden
+                            onChange={handleUpload}
+                        />
 
-                            if (e.key === "Enter") {
-                                handleSendMessage();
+                        {/* Upload Button */}
+                        <button
+                            onClick={() =>
+                                fileInputRef.current.click()
                             }
-                        }}
-                        className="
-                            flex-1
-                            bg-[#111827]
-                            p-4
-                            rounded-lg
-                            outline-none
-                        "
-                    />
+                            className="
+                                h-11
+                                w-11
+                                rounded-full
+                                bg-[#404040]
+                                hover:bg-[#4a4a4a]
+                                flex
+                                items-center
+                                justify-center
+                                transition-all
+                                duration-200
+                                flex-shrink-0
+                            "
+                        >
+                            <FaPlus className="text-sm" />
+                        </button>
 
-                    <button
-                        onClick={handleSendMessage}
+                        {/* Input */}
+                        <input
+                            type="text"
+                            placeholder="Ask anything..."
+                            value={message}
+                            onChange={(e) =>
+                                setMessage(
+                                    e.target.value
+                                )
+                            }
+                            onKeyDown={(e) => {
+
+                                if (e.key === "Enter") {
+                                    handleSendMessage();
+                                }
+                            }}
+                            className="
+                                flex-1
+                                bg-transparent
+                                text-white
+                                placeholder:text-gray-400
+                                outline-none
+                                text-base
+                                py-2
+                            "
+                        />
+
+                        {/* ChatGPT Style Send Icon */}
+                        <button
+                            onClick={handleSendMessage}
+                            className="
+                                h-11
+                                w-11
+                                rounded-full
+                                bg-white
+                                text-black
+                                hover:scale-105
+                                transition-all
+                                duration-200
+                                flex
+                                items-center
+                                justify-center
+                                flex-shrink-0
+                            "
+                        >
+                            <IoArrowUp className="text-xl" />
+                        </button>
+
+                    </div>
+
+                    {/* Footer */}
+                    <p
                         className="
-                            bg-blue-500
-                            hover:bg-blue-600
-                            px-6
-                            rounded-lg
+                            text-center
+                            text-xs
+                            text-gray-500
+                            mt-3
                         "
                     >
-                        Send
-                    </button>
+                        AI can make mistakes. Check important info.
+                    </p>
 
                 </div>
 

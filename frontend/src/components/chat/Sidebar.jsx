@@ -4,7 +4,10 @@ import {
     FaSignOutAlt
 } from "react-icons/fa";
 
-import { useNavigate } from "react-router-dom";
+import {
+    useLocation,
+    useNavigate
+} from "react-router-dom";
 
 import useChat from "../../hooks/useChat";
 
@@ -13,6 +16,8 @@ import useAuth from "../../hooks/useAuth";
 const Sidebar = ({ onNewChat }) => {
 
     const navigate = useNavigate();
+
+    const location = useLocation();
 
     const {
         conversations,
@@ -30,25 +35,43 @@ const Sidebar = ({ onNewChat }) => {
     };
 
     return (
+
         <div
             className={`
                 h-screen
-                bg-[#111827]
+                bg-[#171717]
                 border-r
-                border-gray-800
+                border-[#2a2a2a]
                 transition-all
                 duration-300
                 flex
                 flex-col
-                ${sidebarOpen ? "w-[280px]" : "w-[80px]"}
+                overflow-hidden
+                ${sidebarOpen ? "w-[260px]" : "w-[72px]"}
             `}
         >
 
-            <div className="p-4 flex items-center justify-between">
+            {/* Top */}
+            <div
+                className="
+                    p-3
+                    flex
+                    items-center
+                    justify-between
+                "
+            >
 
                 {
                     sidebarOpen && (
-                        <h1 className="text-xl font-bold text-blue-500">
+
+                        <h1
+                            className="
+                                text-xl
+                                font-semibold
+                                text-white
+                                tracking-wide
+                            "
+                        >
                             AI-RAG
                         </h1>
                     )
@@ -58,14 +81,24 @@ const Sidebar = ({ onNewChat }) => {
                     onClick={() =>
                         setSidebarOpen(!sidebarOpen)
                     }
-                    className="p-2 hover:bg-[#1f2937] rounded-lg"
+                    className="
+                        h-10
+                        w-10
+                        rounded-lg
+                        hover:bg-[#2a2a2a]
+                        flex
+                        items-center
+                        justify-center
+                        transition
+                    "
                 >
-                    <FaBars />
+                    <FaBars className="text-gray-300" />
                 </button>
 
             </div>
 
-            <div className="p-4">
+            {/* New Chat */}
+            <div className="px-3 pb-3">
 
                 <button
                     onClick={onNewChat}
@@ -74,62 +107,130 @@ const Sidebar = ({ onNewChat }) => {
                         flex
                         items-center
                         gap-3
-                        bg-blue-500
-                        hover:bg-blue-600
+                        bg-[#2f2f2f]
+                        hover:bg-[#3a3a3a]
                         p-3
-                        rounded-xl
-                        transition
+                        rounded-2xl
+                        transition-all
+                        duration-200
                     "
                 >
 
-                    <FaPlus />
+                    <FaPlus className="text-sm" />
 
                     {
                         sidebarOpen &&
-                        <span>New Chat</span>
+                        <span className="font-medium">
+                            New Chat
+                        </span>
                     }
 
                 </button>
 
             </div>
 
-            <div className="flex-1 overflow-y-auto px-3">
+            {/* Chats */}
+            <div
+                className="
+                    flex-1
+                    overflow-y-auto
+                    px-2
+                    pb-4
+                "
+            >
 
                 {
                     Array.isArray(conversations) &&
-                    conversations.map((chat) => (
 
-                        <div
-                            key={chat.conversation_id}
-                            onClick={() =>
-                                navigate(
-                                    `/chat/${chat.conversation_id}`
-                                )
-                            }
-                            className="
-                                p-3
-                                rounded-lg
-                                hover:bg-[#1f2937]
-                                cursor-pointer
-                                mb-2
-                                transition
-                            "
-                        >
+                    [...conversations]
+                        .reverse()
+                        .map((chat) => {
 
-                            {
-                                sidebarOpen &&
-                                <p className="truncate text-sm">
-                                    {chat.title}
-                                </p>
-                            }
+                            const isActive =
+                                location.pathname ===
+                                `/chat/${chat.conversation_id}`;
 
-                        </div>
-                    ))
+                            return (
+
+                                <div
+                                    key={chat.conversation_id}
+                                    onClick={() =>
+                                        navigate(
+                                            `/chat/${chat.conversation_id}`
+                                        )
+                                    }
+                                    className={`
+                                        group
+                                        mb-1
+                                        rounded-xl
+                                        cursor-pointer
+                                        transition-all
+                                        duration-200
+                                        flex
+                                        items-center
+                                        gap-3
+                                        px-3
+                                        py-3
+                                        
+                                        ${
+                                            isActive
+                                                ? "bg-[#2f2f2f]"
+                                                : "hover:bg-[#242424]"
+                                        }
+                                    `}
+                                >
+
+                                    {/* Dot */}
+                                    <div
+                                        className={`
+                                            h-2
+                                            w-2
+                                            rounded-full
+                                            flex-shrink-0
+                                            
+                                            ${
+                                                isActive
+                                                    ? "bg-white"
+                                                    : "bg-gray-500"
+                                            }
+                                        `}
+                                    />
+
+                                    {
+                                        sidebarOpen && (
+
+                                            <p
+                                                className={`
+                                                    truncate
+                                                    text-sm
+                                                    
+                                                    ${
+                                                        isActive
+                                                            ? "text-white font-medium"
+                                                            : "text-gray-300"
+                                                    }
+                                                `}
+                                            >
+                                                {chat.title}
+                                            </p>
+                                        )
+                                    }
+
+                                </div>
+                            );
+                        })
                 }
 
             </div>
 
-            <div className="p-4 border-t border-gray-800">
+            {/* Bottom */}
+            <div
+                className="
+                    p-3
+                    border-t
+                    border-[#2a2a2a]
+                "
+            >
 
                 <button
                     onClick={handleLogout}
@@ -138,17 +239,21 @@ const Sidebar = ({ onNewChat }) => {
                         flex
                         items-center
                         gap-3
-                        hover:bg-[#1f2937]
+                        hover:bg-[#2a2a2a]
                         p-3
-                        rounded-lg
+                        rounded-xl
+                        transition-all
+                        duration-200
                     "
                 >
 
-                    <FaSignOutAlt />
+                    <FaSignOutAlt className="text-gray-300" />
 
                     {
                         sidebarOpen &&
-                        <span>Logout</span>
+                        <span className="text-gray-200">
+                            Logout
+                        </span>
                     }
 
                 </button>
