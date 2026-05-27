@@ -55,6 +55,12 @@ const ChatPage = () => {
     const fileInputRef = useRef();
 
     const bottomRef = useRef();
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [uploading, setUploading] = useState(false);
+
+    const [uploadFileName, setUploadFileName] = useState("");
     
     useEffect(() => {
 
@@ -193,19 +199,16 @@ const ChatPage = () => {
         if (!file) return;
 
         try {
-
+            setUploading(true);
+            setUploadFileName(file.name);
             await uploadDocument(
                 conversationId,
                 file
             );
-
-            alert("Upload successful");
-
         } catch (err) {
-
             console.log(err);
-
-            alert("Upload failed");
+        }finally{
+            setUploading(false);
         }
     };
 
@@ -223,6 +226,8 @@ const ChatPage = () => {
             handleSendMessage={handleSendMessage}
             modalOpen={modalOpen}
             handleCreateChat={handleCreateChat}
+            uploading={uploading}
+            uploadFileName={uploadFileName}
         />
     );
 };

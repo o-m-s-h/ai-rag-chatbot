@@ -16,8 +16,11 @@ const ChatLayout = ({
     setMessage,
     handleSendMessage,
     modalOpen,
-    handleCreateChat
+    handleCreateChat,
+    uploading,
+    uploadFileName
 }) => {
+    const isBusy = loading || uploading;
     return (
 
         <div className="h-screen bg-[#212121] text-white flex overflow-hidden">
@@ -135,11 +138,73 @@ const ChatLayout = ({
                         md:px-8
                         pb-6
                     "
-                >
+                    >
+
+                    {
+                        uploading && (
+
+                            <div
+                                className="
+                                    max-w-4xl
+                                    mx-auto
+                                    mb-4
+                                    px-4
+                                "
+                            >
+
+                                <div
+                                    className="
+                                        bg-[#2f2f2f]
+                                        border
+                                        border-[#3a3a3a]
+                                        rounded-2xl
+                                        px-4
+                                        py-3
+                                        flex
+                                        items-center
+                                        gap-3
+                                        animate-pulse
+                                    "
+                                >
+
+                                    {/* File Icon */}
+                                    <div
+                                        className="
+                                            h-10
+                                            w-10
+                                            rounded-xl
+                                            bg-[#404040]
+                                            flex
+                                            items-center
+                                            justify-center
+                                            text-lg
+                                        "
+                                    >
+                                        📄
+                                    </div>
+
+                                    {/* File Details */}
+                                    <div className="flex flex-col">
+
+                                        <p className="text-sm text-white font-medium">
+                                            {uploadFileName}
+                                        </p>
+
+                                        <p className="text-xs text-gray-400">
+                                            Processing document...
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        )
+                    }
 
                     {/* PILL SHAPED BAR */}
                     <div
-                        className="
+                        className={`
                             max-w-4xl
                             mx-auto
                             bg-[#2f2f2f]
@@ -152,7 +217,15 @@ const ChatLayout = ({
                             items-center
                             gap-3
                             shadow-lg
-                        "
+                            transition-all
+                            duration-300
+
+                            ${
+                                isBusy
+                                    ? "opacity-60 pointer-events-none"
+                                    : "opacity-100"
+                            }
+                        `}
                     >
 
                         <input
@@ -167,6 +240,7 @@ const ChatLayout = ({
                             onClick={() =>
                                 fileInputRef.current.click()
                             }
+                            disabled={isBusy}
                             className="
                                 h-11
                                 w-11
@@ -196,7 +270,7 @@ const ChatLayout = ({
                             }
                             onKeyDown={(e) => {
 
-                                if (e.key === "Enter") {
+                                if (e.key === "Enter" && !isBusy) {
                                     handleSendMessage();
                                 }
                             }}
@@ -214,6 +288,7 @@ const ChatLayout = ({
                         {/* ChatGPT Style Send Icon */}
                         <button
                             onClick={handleSendMessage}
+                            disabled={isBusy}
                             className="
                                 h-11
                                 w-11
