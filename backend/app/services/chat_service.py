@@ -43,13 +43,21 @@ async def process_chat(
         previous_messages
     )
 
-    enhanced_query = f"""
-Conversation History:
-{conversation_context}
+    if len(previous_messages) > 0:
 
-Current Question:
-{user_message}
-"""
+        latest_context = previous_messages[-1]
+
+        enhanced_query = f"""
+    Previous Context:
+    {latest_context}
+
+    Current Question:
+    {user_message}
+    """
+
+    else:
+
+        enhanced_query = user_message
 
     retrieved_chunks = retrieve_relevant_chunks(
         enhanced_query,

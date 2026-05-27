@@ -88,7 +88,7 @@ class HybridRetriever(BaseRetriever):
     """
 
     conversation_id: str
-    top_k: int = 10
+    top_k: int = 30
 
     def _get_relevant_documents(
         self,
@@ -205,19 +205,29 @@ class HybridRetriever(BaseRetriever):
         # RETURN AS LANGCHAIN DOCUMENTS
         # -----------------------------
 
+        filtered_results = []
+
+        top_source = reranked_results[0]["source"]
+
+        for result in reranked_results:
+
+            if result["source"] == top_source:
+
+                filtered_results.append(result)
+
         return [
             Document(
                 page_content=result["content"],
                 metadata={"source": result["source"]}
             )
-            for result in reranked_results[:5]
+            for result in filtered_results[:8]
         ]
 
 
 def retrieve_relevant_chunks(
     query,
     conversation_id,
-    top_k=10
+    top_k=25
 ):
     retriever = HybridRetriever(
         conversation_id=conversation_id,
