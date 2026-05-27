@@ -20,3 +20,5 @@ cryptography
 
 numpy
 pydantic
+
+email-validator
