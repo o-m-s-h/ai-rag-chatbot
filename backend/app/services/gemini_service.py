@@ -38,7 +38,7 @@ Question:
 
         response = client.chat.completions.create(
 
-            model="openai/gpt-oss-120b:free",
+            model="minimax/minimax-m3:free",
 
             messages=[
                 {
