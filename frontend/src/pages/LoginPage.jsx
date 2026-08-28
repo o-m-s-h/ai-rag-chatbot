@@ -41,9 +41,11 @@ const LoginPage = () => {
 
             setLoading(true);
 
-            setError("");
-
             const data = await loginUser(formData);
+
+            if (!data.success) {
+                throw new Error(data.message || "Login failed");
+            }
 
             localStorage.setItem("token", data.token);
 
