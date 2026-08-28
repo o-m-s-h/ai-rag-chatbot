@@ -112,6 +112,7 @@ const RegisterPage = () => {
                         bg-white/50
                         border border-white/40
                         outline-none
+                        text-gray-900
                         focus:ring-2 focus:ring-violet-400
                         transition-all
                         placeholder:text-gray-500
@@ -129,6 +130,7 @@ const RegisterPage = () => {
                         bg-white/50
                         border border-white/40
                         outline-none
+                        text-gray-900
                         focus:ring-2 focus:ring-blue-400
                         transition-all
                         placeholder:text-gray-500
@@ -146,6 +148,7 @@ const RegisterPage = () => {
                         bg-white/50
                         border border-white/40
                         outline-none
+                        text-gray-900
                         focus:ring-2 focus:ring-cyan-400
                         transition-all
                         placeholder:text-gray-500
