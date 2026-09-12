@@ -4,7 +4,8 @@ import { useNavigate, Link } from "react-router-dom";
 
 import { registerUser } from "../services/authService";
 
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import AuthLayout from "../components/auth/AuthLayout";
 
 const RegisterPage = () => {
 
@@ -16,6 +17,7 @@ const RegisterPage = () => {
         password: ""
     });
 
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const [error, setError] = useState("");
@@ -56,152 +58,25 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="relative min-h-screen overflow-hidden bg-[#f8fbff] isolate flex items-center justify-center px-6">
-
-            {/* Aurora Background */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-
-                <div className="absolute top-[-10rem] left-[-5rem] w-[40rem] h-[40rem]
-                bg-blue-300 opacity-50 rounded-full blur-2xl animate-aurora1" />
-
-                <div className="absolute top-[10rem] right-[-10rem] w-[35rem] h-[35rem]
-                bg-cyan-200 opacity-50 rounded-full blur-2xl animate-aurora2" />
-
-                <div className="absolute bottom-[-10rem] left-[20%] w-[45rem] h-[45rem]
-                bg-purple-200 opacity-40 rounded-full blur-2xl animate-aurora3" />
-
-                <div className="absolute inset-0 backdrop-blur-[80px]" />
-
-            </div>
-
-            {/* Register Card */}
-            <div
-                className="
-                relative z-10
-                w-full max-w-md
-                bg-white/40
-                backdrop-blur-2xl
-                border border-white/30
-                shadow-2xl
-                rounded-3xl
-                p-10
-                "
-            >
-
-                <div className="mb-8 text-center">
-
-                    <h1 className="text-4xl font-extrabold text-gray-800">
-                        Create Account
-                    </h1>
-
+        <AuthLayout>
+            <span className="eyebrow">MAKE ROOM FOR YOUR NEXT IDEA</span>
+            <h2>A fresh start.</h2>
+            <p className="auth-description">Create your account. Bring your knowledge to life.</p>
+            <form onSubmit={handleSubmit} className="auth-form">
+                <label htmlFor="username">Username</label>
+                <input id="username" type="text" name="username" autoComplete="username" placeholder="What should we call you?" required value={formData.username} onChange={handleChange} />
+                <label htmlFor="email">Email address</label>
+                <input id="email" type="email" name="email" autoComplete="email" placeholder="you@example.com" required value={formData.email} onChange={handleChange} />
+                <label htmlFor="password">Password</label>
+                <div className="password-field">
+                    <input id="password" type={showPassword ? "text" : "password"} name="password" autoComplete="new-password" placeholder="Choose a password" required value={formData.password} onChange={handleChange} />
+                    <button type="button" className="icon-button" aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button>
                 </div>
-
-                <form
-                    onSubmit={handleSubmit}
-                    className="flex flex-col gap-5"
-                >
-
-                    <input
-                        type="text"
-                        name="username"
-                        placeholder="Enter Username"
-                        value={formData.username}
-                        onChange={handleChange}
-                        className="
-                        p-4 rounded-2xl
-                        bg-white/50
-                        border border-white/40
-                        outline-none
-                        text-gray-900
-                        focus:ring-2 focus:ring-violet-400
-                        transition-all
-                        placeholder:text-gray-500
-                        "
-                    />
-
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Enter Email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="
-                        p-4 rounded-2xl
-                        bg-white/50
-                        border border-white/40
-                        outline-none
-                        text-gray-900
-                        focus:ring-2 focus:ring-blue-400
-                        transition-all
-                        placeholder:text-gray-500
-                        "
-                    />
-
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Enter Password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="
-                        p-4 rounded-2xl
-                        bg-white/50
-                        border border-white/40
-                        outline-none
-                        text-gray-900
-                        focus:ring-2 focus:ring-cyan-400
-                        transition-all
-                        placeholder:text-gray-500
-                        "
-                    />
-
-                    {
-                        error && (
-                            <p className="text-red-500 text-sm text-center">
-                                {error}
-                            </p>
-                        )
-                    }
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="
-                        mt-2
-                        bg-gradient-to-r from-violet-500 via-blue-500 to-cyan-500
-                        hover:scale-[1.02]
-                        text-white
-                        p-4 rounded-2xl
-                        font-semibold
-                        shadow-lg
-                        transition-all duration-300
-                        "
-                    >
-                        {
-                            loading
-                            ? "Creating account..."
-                            : "Register"
-                        }
-                    </button>
-
-                </form>
-
-                <p className="text-center text-gray-600 mt-6">
-
-                    Already have an account?{" "}
-
-                    <Link
-                        to="/login"
-                        className="text-blue-500 font-semibold hover:text-cyan-500 transition"
-                    >
-                        Login
-                    </Link>
-
-                </p>
-
-            </div>
-
-        </div>
+                {error && <p role="alert" className="form-error">{error}</p>}
+                <button type="submit" disabled={loading} className="button button-accent auth-submit">{loading ? <><Loader2 className="animate-spin" size={18} /> Creating account...</> : <>Create account <ArrowRight size={18} /></>}</button>
+            </form>
+            <p className="auth-switch">Already have an account? <Link to="/login">Log in <ArrowRight size={14} /></Link></p>
+        </AuthLayout>
     );
 };
 

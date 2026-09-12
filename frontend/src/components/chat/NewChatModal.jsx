@@ -1,99 +1,16 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, MessageSquare, X } from "lucide-react";
 
-const NewChatModal = ({
-    isOpen,
-    onClose,
-    onCreate
-}) => {
-
+export default function NewChatModal({ isOpen, onClose, onCreate }) {
     const [chatName, setChatName] = useState("");
+    const dialogRef = useRef(null);
+    useEffect(() => {
+        const dialog = dialogRef.current;
+        if (isOpen && !dialog.open) dialog.showModal();
+        if (!isOpen && dialog.open) dialog.close();
+    }, [isOpen]);
+    return <dialog ref={dialogRef} className="new-chat-dialog" aria-labelledby="new-chat-title" onCancel={onClose} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+        <div className="dialog-content"><button className="icon-button dialog-close" aria-label="Close dialog" onClick={onClose}><X size={19} /></button><span className="welcome-symbol"><MessageSquare size={24} /></span><span className="eyebrow">A NEW THREAD OF THOUGHT</span><h2 id="new-chat-title">Let’s start something.</h2><p>Give your conversation a name. You can add documents and start exploring next.</p><form onSubmit={e => { e.preventDefault(); if (!chatName.trim()) return; onCreate(chatName); setChatName(""); }}><label htmlFor="chat-name">Conversation name</label><input autoFocus id="chat-name" placeholder="e.g. Research notes" value={chatName} onChange={e => setChatName(e.target.value)} required /><div className="dialog-actions"><button className="button button-quiet" type="button" onClick={onClose}>Cancel</button><button className="button button-accent" type="submit" disabled={!chatName.trim()}>Create conversation <ArrowRight size={16} /></button></div></form></div>
+    </dialog>;
+}
 
-    if (!isOpen) return null;
-
-    return (
-        <div
-            className="
-                fixed
-                inset-0
-                bg-black/50
-                flex
-                items-center
-                justify-center
-                z-50
-            "
-        >
-
-            <div
-                className="
-                    bg-[#111827]
-                    p-8
-                    rounded-2xl
-                    w-[400px]
-                    border
-                    border-gray-800
-                "
-            >
-
-                <h2 className="text-2xl font-bold mb-6">
-                    Create New Chat
-                </h2>
-
-                <input
-                    type="text"
-                    placeholder="Enter chat name"
-                    value={chatName}
-                    onChange={(e) =>
-                        setChatName(e.target.value)
-                    }
-                    className="
-                        w-full
-                        p-4
-                        rounded-lg
-                        bg-[#1f2937]
-                        outline-none
-                        mb-6
-                    "
-                />
-
-                <div className="flex justify-end gap-4">
-
-                    <button
-                        onClick={onClose}
-                        className="
-                            px-5
-                            py-2
-                            rounded-lg
-                            border
-                            border-gray-700
-                        "
-                    >
-                        Cancel
-                    </button>
-
-                    <button
-                        onClick={() => {
-
-                            onCreate(chatName);
-
-                            setChatName("");
-                        }}
-                        className="
-                            px-5
-                            py-2
-                            rounded-lg
-                            bg-blue-500
-                            hover:bg-blue-600
-                        "
-                    >
-                        Create
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-    );
-};
-
-export default NewChatModal;

@@ -1,267 +1,30 @@
-import {
-    FaBars,
-    FaPlus,
-    FaSignOutAlt
-} from "react-icons/fa";
-
-import {
-    useLocation,
-    useNavigate
-} from "react-router-dom";
-
+import { LogOut, MessageSquare, PanelLeftClose, PanelLeftOpen, Plus, X } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import useChat from "../../hooks/useChat";
-
 import useAuth from "../../hooks/useAuth";
+import Brand from "../common/Brand";
 
-const Sidebar = ({ onNewChat }) => {
-
+export default function Sidebar({ onNewChat, mobileOpen, onMobileClose }) {
     const navigate = useNavigate();
-
     const location = useLocation();
+    const { conversations, sidebarOpen, setSidebarOpen } = useChat();
+    const { user, logout } = useAuth();
+    return <>
+        {mobileOpen && <button className="sidebar-scrim" aria-label="Close navigation" onClick={onMobileClose} />}
+        <aside className={`chat-sidebar ${sidebarOpen ? "" : "is-collapsed"} ${mobileOpen ? "mobile-open" : ""}`}>
+            <div className="sidebar-top"><div className="sidebar-brand"><Brand /></div><button className="icon-button desktop-sidebar-toggle" aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"} aria-expanded={sidebarOpen} onClick={() => setSidebarOpen(!sidebarOpen)}>{sidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}</button><button className="icon-button mobile-close" aria-label="Close navigation" onClick={onMobileClose}><X size={20} /></button></div>
+            <button className="new-chat-button" title="New conversation" onClick={() => { onNewChat(); onMobileClose(); }}><Plus size={18} /><span className="sidebar-label">New conversation</span></button>
+            <div className="sidebar-section-label sidebar-label">YOUR CONVERSATIONS</div>
+            <nav className="conversation-list" aria-label="Conversations">
+                {Array.isArray(conversations) && [...conversations].reverse().map(chat => {
+                    const active = location.pathname === `/chat/${chat.conversation_id}`;
+                    return <button key={chat.conversation_id} className={`conversation-link ${active ? "active" : ""}`} title={chat.title} aria-current={active ? "page" : undefined} onClick={() => { navigate(`/chat/${chat.conversation_id}`); onMobileClose(); }}><MessageSquare size={17} /><span className="sidebar-label">{chat.title}</span></button>;
+                })}
+                {(!conversations || conversations.length === 0) && <p className="sidebar-empty sidebar-label">A clean slate.<br />Start your first conversation.</p>}
+            </nav>
+            <div className="sidebar-tip sidebar-label"><span>Good questions start here.</span><p>Add a document to give your conversation more context.</p></div>
+            <div className="sidebar-profile"><span className="user-avatar">{(user?.username || "U").slice(0, 1).toUpperCase()}</span><div className="profile-name sidebar-label"><strong>{user?.username || "Your workspace"}</strong><span>Personal workspace</span></div><button className="icon-button" title="Log out" aria-label="Log out" onClick={() => { logout(); navigate("/login"); }}><LogOut size={17} /></button></div>
+        </aside>
+    </>;
+}
 
-    const {
-        conversations,
-        sidebarOpen,
-        setSidebarOpen
-    } = useChat();
-
-    const { logout } = useAuth();
-
-    const handleLogout = () => {
-
-        logout();
-
-        navigate("/login");
-    };
-
-    return (
-
-        <div
-            className={`
-                h-screen
-                bg-[#171717]
-                border-r
-                border-[#2a2a2a]
-                transition-all
-                duration-300
-                flex
-                flex-col
-                overflow-hidden
-                ${sidebarOpen ? "w-[260px]" : "w-[72px]"}
-            `}
-        >
-
-            {/* Top */}
-            <div
-                className="
-                    p-3
-                    flex
-                    items-center
-                    justify-between
-                "
-            >
-
-                {
-                    sidebarOpen && (
-
-                        <h1
-                            className="
-                                text-xl
-                                font-semibold
-                                text-white
-                                tracking-wide
-                            "
-                        >
-                            AI-RAG
-                        </h1>
-                    )
-                }
-
-                <button
-                    onClick={() =>
-                        setSidebarOpen(!sidebarOpen)
-                    }
-                    className="
-                        h-10
-                        w-10
-                        rounded-lg
-                        hover:bg-[#2a2a2a]
-                        flex
-                        items-center
-                        justify-center
-                        transition
-                    "
-                >
-                    <FaBars className="text-gray-300" />
-                </button>
-
-            </div>
-
-            {/* New Chat */}
-            <div className="px-3 pb-3">
-
-                <button
-                    onClick={onNewChat}
-                    className="
-                        w-full
-                        flex
-                        items-center
-                        gap-3
-                        bg-[#2f2f2f]
-                        hover:bg-[#3a3a3a]
-                        p-3
-                        rounded-2xl
-                        transition-all
-                        duration-200
-                    "
-                >
-
-                    <FaPlus className="text-sm" />
-
-                    {
-                        sidebarOpen &&
-                        <span className="font-medium">
-                            New Chat
-                        </span>
-                    }
-
-                </button>
-
-            </div>
-
-            {/* Chats */}
-            <div
-                className="
-                    flex-1
-                    overflow-y-auto
-                    px-2
-                    pb-4
-                "
-            >
-
-                {
-                    Array.isArray(conversations) &&
-
-                    [...conversations]
-                        .reverse()
-                        .map((chat) => {
-
-                            const isActive =
-                                location.pathname ===
-                                `/chat/${chat.conversation_id}`;
-
-                            return (
-
-                                <div
-                                    key={chat.conversation_id}
-                                    onClick={() =>
-                                        navigate(
-                                            `/chat/${chat.conversation_id}`
-                                        )
-                                    }
-                                    className={`
-                                        group
-                                        mb-1
-                                        rounded-xl
-                                        cursor-pointer
-                                        transition-all
-                                        duration-200
-                                        flex
-                                        items-center
-                                        gap-3
-                                        px-3
-                                        py-3
-                                        
-                                        ${
-                                            isActive
-                                                ? "bg-[#2f2f2f]"
-                                                : "hover:bg-[#242424]"
-                                        }
-                                    `}
-                                >
-
-                                    {/* Dot */}
-                                    <div
-                                        className={`
-                                            h-2
-                                            w-2
-                                            rounded-full
-                                            flex-shrink-0
-                                            
-                                            ${
-                                                isActive
-                                                    ? "bg-white"
-                                                    : "bg-gray-500"
-                                            }
-                                        `}
-                                    />
-
-                                    {
-                                        sidebarOpen && (
-
-                                            <p
-                                                className={`
-                                                    truncate
-                                                    text-sm
-                                                    
-                                                    ${
-                                                        isActive
-                                                            ? "text-white font-medium"
-                                                            : "text-gray-300"
-                                                    }
-                                                `}
-                                            >
-                                                {chat.title}
-                                            </p>
-                                        )
-                                    }
-
-                                </div>
-                            );
-                        })
-                }
-
-            </div>
-
-            {/* Bottom */}
-            <div
-                className="
-                    p-3
-                    border-t
-                    border-[#2a2a2a]
-                "
-            >
-
-                <button
-                    onClick={handleLogout}
-                    className="
-                        w-full
-                        flex
-                        items-center
-                        gap-3
-                        hover:bg-[#2a2a2a]
-                        p-3
-                        rounded-xl
-                        transition-all
-                        duration-200
-                    "
-                >
-
-                    <FaSignOutAlt className="text-gray-300" />
-
-                    {
-                        sidebarOpen &&
-                        <span className="text-gray-200">
-                            Logout
-                        </span>
-                    }
-
-                </button>
-
-            </div>
-
-        </div>
-    );
-};
-
-export default Sidebar;

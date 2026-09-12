@@ -1,211 +1,29 @@
-import { Link } from "react-router-dom";
-import { TypeAnimation } from "react-type-animation";
-import { useEffect, useState } from "react";
 import { FaGithub } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { ArrowRight, ArrowUp, FileText, Layers, MessageSquare, Search, Sparkles, Upload } from "lucide-react";
+import Brand from "../components/common/Brand";
 
-const sentences = [
-    "Upload documents and retrieve context-aware information instantly.",
-
-    "Experience hybrid retrieval combining vector similarity and keyword-based ranking.",
-
-    "Generates intelligent responses grounded on retrieved knowledge chunks and reranked context.",
-
-    "Built production-ready AI assistant powered by embeddings, retrieval pipelines, and LLM reasoning."
+const features = [
+    { icon: Search, title: "Find the meaning, not just the words.", text: "Semantic and keyword search work together to find the context that matters." },
+    { icon: MessageSquare, title: "Keep the conversation going.", text: "Ask follow-up questions and explore ideas with context from your conversation." },
+    { icon: Layers, title: "Bring your knowledge together.", text: "Add more documents to the same chat and connect information across your files." },
 ];
 
-const LandingPage = () => {
+export default function LandingPage() {
+    return <div className="landing-page">
+        <header className="landing-nav"><Brand /><nav aria-label="Main navigation"><a className="nav-feature" href="#how-it-works">How it works</a><Link className="text-link" to="/login">Log in</Link><Link className="button button-dark" to="/register">Get started <ArrowRight size={16} /></Link></nav></header>
+        <main>
+            <section className="landing-hero">
+                <div className="hero-copy"><span className="eyebrow"><span className="tiny-dot" /> YOUR KNOWLEDGE, CONNECTED</span><h1>Big documents.<br />Clear answers.<br /><em>Just ask.</em></h1><p>A thoughtful AI workspace for your documents. Ask questions, uncover insights, and get answers grounded in your own knowledge.</p><div className="hero-actions"><Link className="button button-accent" to="/register">Start a conversation <ArrowRight size={18} /></Link><a className="text-link" href="#how-it-works">See how it works <span aria-hidden="true">↗</span></a></div><span className="hero-footnote"><FileText size={14} /> Your documents. Your context. Better answers.</span></div>
+                <div className="hero-art"><div className="orbit orbit-one" /><div className="orbit orbit-two" /><span className="art-caption">LESS DIGGING. MORE DISCOVERING.</span>
+                    <div className="demo-window"><div className="demo-top"><span className="demo-dots"><i /><i /><i /></span><span>A conversation with your knowledge</span><Sparkles size={14} /></div><div className="demo-body"><span className="demo-label">EXAMPLE WORKSPACE</span><div className="demo-document"><span className="file-symbol"><FileText size={22} /></span><div><strong>Research notes.pdf</strong><small>Added to this conversation</small></div><span className="document-tag">PDF</span></div><div className="demo-question">What are the key takeaways?</div><div className="demo-answer"><span className="mini-brand"><Sparkles size={17} /></span><div><strong>Let’s connect the dots.</strong><p>Your notes point to three key themes:</p><ul><li>Make complex information accessible.</li><li>Connect ideas across your documents.</li><li>Turn insights into your next steps.</li></ul><span className="demo-source"><FileText size={12} /> Research notes.pdf</span></div></div><div className="demo-composer"><span>Ask a follow-up question...</span><ArrowUp size={17} /></div></div></div>
+                    <div className="floating-note"><Sparkles size={19} /><span>Grounded in <strong>your knowledge</strong></span></div>
+                </div>
+            </section>
+            <section id="how-it-works" className="how-section"><div className="section-intro"><span className="eyebrow">FROM INFORMATION TO UNDERSTANDING</span><h2>Less searching.<br />More lightbulb moments.</h2><p>Bring your files. We’ll help you see the bigger picture.</p></div><div className="step-list">{[{ icon: Upload, title: "Bring your documents", text: "Create a conversation and upload the files you want to explore." }, { icon: MessageSquare, title: "Ask what’s on your mind", text: "Summarize a topic, untangle an idea, or ask a specific question." }, { icon: Sparkles, title: "Make sense of it all", text: "Explore contextual answers with sources you can refer back to." }].map(({ icon: Icon, title, text }, i) => <div className="step" key={title}><span className="step-number">0{i + 1}</span><Icon size={21} /><div><h3>{title}</h3><p>{text}</p></div></div>)}</div></section>
+            <section className="feature-grid">{features.map(({ icon: Icon, title, text }) => <article className="feature-card" key={title}><Icon size={23} /><h3>{title}</h3><p>{text}</p></article>)}</section>
+        </main><footer className="landing-footer"><Brand /><span>A little clarity goes a long way.</span><a href="https://github.com/o-m-s-h/ai-rag-chatbot" target="_blank" rel="noopener noreferrer"><FaGithub size={17} /> View on GitHub <ArrowRight size={14} /></a></footer>
+    </div>;
+}
 
-    const [index, setIndex] = useState(0);
-    const [fade, setFade] = useState(true);
 
-    useEffect(() => {
-
-        const interval = setInterval(() => {
-
-            setFade(false);
-
-            setTimeout(() => {
-                setIndex((prev) => (prev + 1) % sentences.length);
-                setFade(true);
-            }, 500);
-
-        }, 5000);
-
-        return () => clearInterval(interval);
-
-    }, []);
-
-    return (
-        <div className="relative min-h-screen overflow-hidden bg-[#f8fbff] text-black isolate">
-            {/* Aurora Background */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-
-                <div className="absolute top-[-10rem] left-[-5rem] w-[40rem] h-[40rem]
-                bg-blue-300 opacity-50 rounded-full blur-2xl animate-aurora1" />
-
-                <div className="absolute top-[10rem] right-[-10rem] w-[35rem] h-[35rem]
-                bg-cyan-200 opacity-50 rounded-full blur-2xl animate-aurora2" />
-
-                <div className="absolute bottom-[-10rem] left-[20%] w-[45rem] h-[45rem]
-                bg-purple-200 opacity-40 rounded-full blur-2xl animate-aurora3" />
-
-                <div className="absolute inset-0 backdrop-blur-[80px]" />
-
-            </div>
-
-            <div className="relative z-10">
-                <nav className="flex items-center justify-end px-10 py-6">
-
-                    <div className="flex gap-4">
-
-                        <Link to="/login">
-                            <button
-                                className="
-                                px-6 py-3
-                                rounded-full
-                                bg-blue-400 text-white
-                                text-sm font-medium
-                                hover:scale-110
-                                transition-all duration-300
-                                "
-                            >
-                                Login
-                            </button>
-                        </Link>
-
-                        <Link to="/register">
-                            <button
-                                className="
-                                px-6 py-3
-                                rounded-full
-                                bg-blue-400 text-white
-                                text-sm font-medium
-                                hover:scale-110
-                                transition-all duration-300
-                                "
-                            >
-                                Register
-                            </button>
-                        </Link>
-
-                    </div>
-                
-                </nav>
-
-                <section className="flex flex-col items-center justify-center text-center px-6 pt-20 pb-28 -mt-10">
-
-                    {/* Typing Animation Heading */}
-                    <div className="text-6xl font-extrabold leading-tight max-w-4xl min-h-[160px]">
-
-                        <TypeAnimation
-                            sequence={[
-                                "Intelligent AI Chat Powered by RAG Architecture",
-                            ]}
-                            speed={50}
-                            cursor={true}
-                            repeat={0}
-                        />
-
-                    </div>
-
-                    {/* Smooth Transition Paragraph */}
-                    <div
-                        className={`mt-8 text-gray-500 text-xl max-w-3xl leading-9 min-h-[120px]
-                        transition-all duration-500 ease-in-out
-                        ${fade ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}
-                        `}
-                    >
-                        {sentences[index]}
-                    </div>
-
-                    {/* Feature Cards */}
-                    <section className="grid md:grid-cols-3 gap-8 w-full max-w-6xl mt-6">
-
-                        <div className="bg-white/40 backdrop-blur-xl p-8 rounded-3xl border border-white/30 shadow-lg hover:scale-105 transition-all duration-300">
-                            <h2 className="text-2xl font-bold mb-4 text-sky-500">
-                                Semantic Search
-                            </h2>
-
-                            <p className="text-gray-600 leading-7">
-                                Advanced embedding-based retrieval for highly relevant document context.
-                            </p>
-                        </div>
-
-                        <div className="bg-white/40 backdrop-blur-xl p-8 rounded-3xl border border-white/30 shadow-lg hover:scale-105 transition-all duration-300">
-                            <h2 className="text-2xl font-bold mb-4 text-cyan-500">
-                                Hybrid Retrieval
-                            </h2>
-
-                            <p className="text-gray-600 leading-7">
-                                Combines vector similarity with keyword search for better accuracy.
-                            </p>
-                        </div>
-
-                        <div className="bg-white/40 backdrop-blur-xl p-8 rounded-3xl border border-white/30 shadow-lg hover:scale-105 transition-all duration-300">
-                            <h2 className="text-2xl font-bold mb-4 text-purple-500">
-                                Context-Aware AI
-                            </h2>
-
-                            <p className="text-gray-600 leading-7">
-                                Uses retrieved knowledge chunks to generate intelligent responses.
-                            </p>
-                        </div>
-
-                        <div className="bg-white/40 backdrop-blur-xl p-8 rounded-3xl border border-white/30 shadow-lg hover:scale-105 transition-all duration-300">
-                            <h2 className="text-2xl font-bold mb-4 text-fuchsia-500">
-                                Dynamic document addition
-                            </h2>
-
-                            <p className="text-gray-600 leading-7">
-                                Can upload additional documents in the same conversation
-                            </p>
-                        </div>
-
-                        <div className="bg-white/40 backdrop-blur-xl p-8 rounded-3xl border border-white/30 shadow-lg hover:scale-105 transition-all duration-300">
-                            <h2 className="text-2xl font-bold mb-4 text-indigo-500">
-                                Context Memory
-                            </h2>
-
-                            <p className="text-gray-600 leading-7">
-                                Generates context aware responses using memory 
-                            </p>
-                        </div>
-
-                        <div className="bg-white/40 backdrop-blur-xl p-8 rounded-3xl border border-white/30 shadow-lg hover:scale-105 transition-all duration-300">
-                            <h2 className="text-2xl font-bold mb-4 text-teal-500">
-                                LLM Model
-                            </h2>
-
-                            <p className="text-gray-600 leading-7">
-                                Uses GPT OSS 120b model to generate proper responses.
-                            </p>
-                        </div>
-
-                    </section>
-
-                </section>
-            </div>
-
-            <a
-                href="https://github.com/o-m-s-h/ai-rag-chatbot"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                fixed bottom-6 right-6
-                bg-white/40 backdrop-blur-xl
-                border border-white/30
-                p-4 rounded-full
-                shadow-lg
-                hover:scale-110 hover:bg-white/60
-                transition-all duration-300
-                z-50
-                "
-            >
-                <FaGithub className="text-3xl text-gray-800 hover:shadow-[0_0_25px_rgba(59,130,246,0.5)]" />
-            </a>
-
-        </div>
-    );
-};
-
-export default LandingPage;

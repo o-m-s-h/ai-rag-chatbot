@@ -1,82 +1,13 @@
 import ReactMarkdown from "react-markdown";
+import { FileText, Sparkles } from "lucide-react";
 
-const ChatMessage = ({
-    role,
-    content,
-    sources
-}) => {
-
-    return (
-        <div
-            className={`
-                w-full
-                flex
-                ${role === "user"
-                    ? "justify-end"
-                    : "justify-start"}
-            `}
-        >
-
-            <div
-                className={`
-                    max-w-[75%]
-                    p-4
-                    rounded-2xl
-                    mb-4
-                    whitespace-pre-wrap
-                    ${
-                        role === "user"
-                        ? "bg-blue-500"
-                        : "bg-[#1f2937]"
-                    }
-                `}
-            >
-
-                <ReactMarkdown>
-                    {content}
-                </ReactMarkdown>
-
-                {
-                    sources &&
-                    sources.length > 0 && (
-                        <div className="mt-4">
-
-                            <p className="
-                                text-xs
-                                text-gray-400
-                                mb-2
-                            ">
-                                Sources
-                            </p>
-
-                            {
-                                sources.map(
-                                    (source, index) => (
-                                        <div
-                                            key={index}
-                                            className="
-                                                text-xs
-                                                bg-[#111827]
-                                                px-3
-                                                py-1
-                                                rounded-lg
-                                                mb-1
-                                            "
-                                        >
-                                            {source}
-                                        </div>
-                                    )
-                                )
-                            }
-
-                        </div>
-                    )
-                }
-
-            </div>
-
+export default function ChatMessage({ role, content, sources }) {
+    const isUser = role === "user";
+    return <article className={`chat-message ${isUser ? "user-message" : "assistant-message"}`}>
+        {!isUser && <span className="assistant-avatar"><Sparkles size={18} /></span>}
+        <div className="message-content"><span className="message-author">{isUser ? "You" : "AI-RAG"}</span><div className="markdown-content"><ReactMarkdown>{content}</ReactMarkdown></div>
+            {sources && sources.length > 0 && <div className="message-sources"><span className="sources-label">SOURCES</span><div>{sources.map((source, index) => <span key={index} className="source-chip"><FileText size={13} />{source}</span>)}</div></div>}
         </div>
-    );
-};
+    </article>;
+}
 
-export default ChatMessage;

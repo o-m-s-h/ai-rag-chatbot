@@ -6,7 +6,8 @@ import { loginUser } from "../services/authService";
 
 import useAuth from "../hooks/useAuth";
 
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import AuthLayout from "../components/auth/AuthLayout";
 
 const LoginPage = () => {
 
@@ -72,169 +73,23 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="relative min-h-screen overflow-hidden bg-[#f8fbff] isolate flex items-center justify-center px-6">
-
-            {/* Aurora Background */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-
-                <div className="absolute top-[-10rem] left-[-5rem] w-[40rem] h-[40rem]
-                bg-blue-300 opacity-50 rounded-full blur-2xl animate-aurora1" />
-
-                <div className="absolute top-[10rem] right-[-10rem] w-[35rem] h-[35rem]
-                bg-cyan-200 opacity-50 rounded-full blur-2xl animate-aurora2" />
-
-                <div className="absolute bottom-[-10rem] left-[20%] w-[45rem] h-[45rem]
-                bg-purple-200 opacity-40 rounded-full blur-2xl animate-aurora3" />
-
-                <div className="absolute inset-0 backdrop-blur-[80px]" />
-
-            </div>
-
-            {/* Login Card */}
-            <div
-                className="
-                relative z-10
-                w-full max-w-md
-                bg-white/40
-                backdrop-blur-2xl
-                border border-white/30
-                shadow-2xl
-                rounded-3xl
-                p-10
-                "
-            >
-
-                <div className="mb-8 text-center">
-
-                    <h1 className="text-4xl font-extrabold text-gray-800">
-                        Welcome Back
-                    </h1>
-
+        <AuthLayout>
+            <span className="eyebrow">YOUR KNOWLEDGE WORKSPACE</span>
+            <h2>Welcome back.</h2>
+            <p className="auth-description">Pick up where your curiosity left off.</p>
+            <form onSubmit={handleSubmit} className="auth-form">
+                <label htmlFor="email">Email address</label>
+                <input id="email" type="email" name="email" autoComplete="email" placeholder="you@example.com" required value={formData.email} onChange={handleChange} />
+                <label htmlFor="password">Password</label>
+                <div className="password-field">
+                    <input id="password" type={showPassword ? "text" : "password"} name="password" autoComplete="current-password" placeholder="Enter your password" required value={formData.password} onChange={handleChange} />
+                    <button type="button" className="icon-button" aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button>
                 </div>
-
-                <form
-                    onSubmit={handleSubmit}
-                    className="flex flex-col gap-5"
-                >
-
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Enter Email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="
-                        p-4 rounded-2xl
-                        bg-white/50
-                        text-black
-                        border border-white/40
-                        outline-none
-                        focus:ring-2 focus:ring-blue-400
-                        transition-all
-                        placeholder:text-gray-500
-                        "
-                    />
-
-                    <div className="relative">
-
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            name="password"
-                            placeholder="Enter Password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="
-                            w-full
-                            p-4 rounded-2xl
-                            bg-white/70
-                            text-black
-                            border border-white/40
-                            outline-none
-                            focus:ring-2 focus:ring-cyan-400
-                            transition-all
-                            placeholder:text-gray-500
-                            pr-14
-                            "
-                        />
-
-                        <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="
-                            absolute right-4 top-1/2
-                            -translate-y-1/2
-                            text-gray-600
-                            hover:text-black
-                            "
-                        >
-                            {
-                                showPassword
-                                ? <EyeOff size={20} />
-                                : <Eye size={20} />
-                            }
-                        </button>
-
-                    </div>
-
-                    {
-                        error && (
-                            <p className="text-red-500 text-sm text-center">
-                                {error}
-                            </p>
-                        )
-                    }
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="
-                        mt-2
-                        bg-gradient-to-r from-blue-500 to-cyan-500
-                        hover:scale-[1.02]
-                        text-white
-                        p-4 rounded-2xl
-                        font-semibold
-                        shadow-lg
-                        transition-all duration-300
-                        disabled:opacity-70
-                        "
-                    >
-
-                        <div className="flex items-center justify-center gap-2 w-full">
-
-                            {
-                                loading ? (
-                                    <>
-                                        <Loader2 className="animate-spin" size={20} />
-                                        <span>Logging In...</span>
-                                    </>
-                                ) : (
-                                    <span>Login</span>
-                                )
-                            }
-
-                        </div>
-
-                    </button>
-
-                </form>
-
-                <p className="text-center text-gray-600 mt-6">
-
-                    Don’t have an account?{" "}
-
-                    <Link
-                        to="/register"
-                        className="text-blue-500 font-semibold hover:text-cyan-500 transition"
-                    >
-                        Register
-                    </Link>
-
-                </p>
-
-            </div>
-
-        </div>
+                {error && <p role="alert" className="form-error">{error}</p>}
+                <button type="submit" disabled={loading} className="button button-accent auth-submit">{loading ? <><Loader2 className="animate-spin" size={18} /> Logging in...</> : <>Log in <ArrowRight size={18} /></>}</button>
+            </form>
+            <p className="auth-switch">New to AI-RAG? <Link to="/register">Create an account <ArrowRight size={14} /></Link></p>
+        </AuthLayout>
     );
 };
 
