@@ -7,8 +7,8 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
-    # GEMINI_API_KEY: str
-    OPENROUTER_API_KEY: str
+    GEMINI_API_KEY: str
+    GEMINI_MODEL: str
 
     ENCRYPTION_KEY: str
 

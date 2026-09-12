@@ -3,8 +3,8 @@ from openai import OpenAI
 from app.core.config import settings
 
 client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=settings.OPENROUTER_API_KEY
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+    api_key=settings.GEMINI_API_KEY
 )
 
 def generate_answer(question, context, conversation_context=""):
@@ -38,7 +38,7 @@ Question:
 
         response = client.chat.completions.create(
 
-            model="minimax/minimax-m3:free",
+            model=settings.GEMINI_MODEL,
 
             messages=[
                 {
