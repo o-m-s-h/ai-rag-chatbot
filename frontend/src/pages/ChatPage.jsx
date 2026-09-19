@@ -41,7 +41,8 @@ const ChatPage = () => {
     const { conversationId } = useParams();
 
     const {
-        fetchConversations
+        fetchConversations,
+        setConversations
     } = useChat();
 
     const [modalOpen, setModalOpen] = useState(false);
@@ -61,6 +62,10 @@ const ChatPage = () => {
     const [uploading, setUploading] = useState(false);
 
     const [uploadFileName, setUploadFileName] = useState("");
+    const [uploadError, setUploadError] = useState("");
+    const [uploadConversationId, setUploadConversationId] = useState(null);
+    const activeConversation = useRef(conversationId);
+    activeConversation.current = conversationId;
     
     useEffect(() => {
 
@@ -94,6 +99,11 @@ const ChatPage = () => {
 
     useEffect(() => {
 
+    let cancelled = false;
+    setMessages([]);
+    setMessage("");
+    setUploadError("");
+
     const fetchMessages = async () => {
 
         if (!conversationId) return;
@@ -104,7 +114,7 @@ const ChatPage = () => {
                     conversationId
                 );
 
-                setMessages(data);
+                if (!cancelled) setMessages(data);
 
             } catch (err) {
 
@@ -113,6 +123,7 @@ const ChatPage = () => {
         };
 
         fetchMessages();
+        return () => { cancelled = true; };
 
     }, [conversationId]);
 
@@ -177,6 +188,7 @@ const ChatPage = () => {
                 sources: data.sources
             };
 
+            if (activeConversation.current !== conversationId) return;
             setMessages((prev) => [
                 ...prev,
                 aiMessage
@@ -195,18 +207,32 @@ const ChatPage = () => {
     const handleUpload = async (e) => {
 
         const file = e.target.files[0];
+        e.target.value = "";
 
-        if (!file) return;
+        if (!file || !conversationId || uploading) return;
 
         try {
             setUploading(true);
+            setUploadConversationId(conversationId);
+            setUploadError("");
             setUploadFileName(file.name);
-            await uploadDocument(
+            const result = await uploadDocument(
                 conversationId,
                 file
             );
+            if (!result.success) throw new Error("Document upload failed. Please try again.");
+            setConversations(previous => previous.map(chat => {
+                if (String(chat.conversation_id) !== conversationId) return chat;
+                const document = result.document || {
+                    filename: result.filename || file.name,
+                    file_type: file.name.split(".").pop().toLowerCase(),
+                };
+                return { ...chat, documents: [...(chat.documents || []).filter(item => item.filename !== document.filename), document] };
+            }));
         } catch (err) {
-            console.log(err);
+            if (activeConversation.current === conversationId) {
+                setUploadError(err.response?.data?.detail || err.message || "Could not upload this document. Please try again.");
+            }
         }finally{
             setUploading(false);
         }
@@ -226,8 +252,10 @@ const ChatPage = () => {
             handleSendMessage={handleSendMessage}
             modalOpen={modalOpen}
             handleCreateChat={handleCreateChat}
-            uploading={uploading}
+            uploading={uploading && uploadConversationId === conversationId}
             uploadFileName={uploadFileName}
+            uploadError={uploadError}
+            uploadPending={uploading}
         />
     );
 };

@@ -157,6 +157,28 @@ em { color: var(--accent); font-family: Georgia, "Times New Roman", serif; font-
 .conversation-link:hover { background: #e8e4db; }
 .conversation-link.active { background: #e8e2d7; color: #493e30; }
 .conversation-link.active svg { color: var(--accent); }
+.conversation-row { display: flex; align-items: center; border-radius: 6px; margin-bottom: 4px; }
+.conversation-row.active { background: #e8e2d7; }
+.conversation-row:hover { background: #e8e4db; }
+.conversation-row .conversation-link { flex: 1; min-width: 0; margin-bottom: 0; }
+.conversation-link > svg { flex-shrink: 0; }
+.conversation-delete { flex-shrink: 0; margin-right: 4px; color: #958773; }
+.conversation-delete:hover { color: #b13b2b; background: #f7ded7; }
+.is-collapsed .conversation-row { flex-direction: column; }
+.is-collapsed .conversation-delete { margin: 0; }
+.mobile-open.is-collapsed .conversation-row { flex-direction: row; }
+.document-list { display: flex; gap: 10px; overflow-x: auto; max-width: 800px; margin: 0 auto 12px; padding-bottom: 4px; }
+.document-card { display: flex; align-items: center; gap: 11px; flex: 0 0 270px; max-width: 100%; padding: 12px; border: 1px solid #ddd6c9; border-radius: 12px; background: #fffefa; }
+.document-icon { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; flex-shrink: 0; width: 43px; height: 49px; border-radius: 8px; background: #eeece6; color: #696355; }
+.document-icon > span { font-size: 8px; font-weight: 700; letter-spacing: .5px; }
+.document-icon-pdf { background: #fae4df; color: #b23f32; }
+.document-icon-docx { background: #e3ecfa; color: #3868ab; }
+.document-icon-pptx { background: #fbebda; color: #b56b26; }
+.document-card-info { flex: 1; min-width: 0; }
+.document-card-info strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.document-card-info > span { display: block; font-size: 10px; color: #827969; margin-top: 5px; }
+.document-ready { color: #548367; flex-shrink: 0; }
+.upload-error { max-width: 800px; margin: 0 auto 12px; }
 .sidebar-empty { font-size: 12px; line-height: 1.8; color: #91897b; padding: 10px 12px; }
 .sidebar-tip { border: 1px solid #ded8cb; border-radius: 8px; padding: 15px; margin: 20px 3px; }
 .sidebar-tip > span { font-family: Georgia, serif; font-size: 15px; color: #655a49; }

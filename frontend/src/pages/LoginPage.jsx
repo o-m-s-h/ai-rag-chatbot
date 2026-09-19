@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useNavigate, Link } from "react-router-dom";
 
-import { loginUser } from "../services/authService";
+import { loginUser, getAuthErrorMessage } from "../services/authService";
 
 import useAuth from "../hooks/useAuth";
 
@@ -42,13 +42,13 @@ const LoginPage = () => {
 
             setLoading(true);
 
+            setError("");
+
             const data = await loginUser(formData);
 
-            if (!data.success) {
+            if (!data.success || !data.token) {
                 throw new Error(data.message || "Login failed");
             }
-
-            localStorage.setItem("token", data.token);
 
             login(
                 data.token,
@@ -63,8 +63,7 @@ const LoginPage = () => {
         } catch (err) {
 
             setError(
-                err.response?.data?.detail ||
-                "Login failed"
+                getAuthErrorMessage(err, "Login failed")
             );
 
         } finally {

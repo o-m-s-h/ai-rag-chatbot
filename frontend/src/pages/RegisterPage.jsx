@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useNavigate, Link } from "react-router-dom";
 
-import { registerUser } from "../services/authService";
+import { registerUser, getAuthErrorMessage } from "../services/authService";
 
 import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
 import AuthLayout from "../components/auth/AuthLayout";
@@ -40,15 +40,18 @@ const RegisterPage = () => {
 
             setError("");
 
-            await registerUser(formData);
+            const data = await registerUser(formData);
+
+            if (!data.success) {
+                throw new Error(data.message || "Registration failed");
+            }
 
             navigate("/login");
 
         } catch (err) {
 
             setError(
-                err.response?.data?.detail ||
-                "Registration failed"
+                getAuthErrorMessage(err, "Registration failed")
             );
 
         } finally {
