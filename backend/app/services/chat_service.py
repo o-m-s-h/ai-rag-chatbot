@@ -1,4 +1,6 @@
 from datetime import datetime
+from bson import ObjectId
+from fastapi import HTTPException
 
 from app.services.retrieval_service import (
     retrieve_relevant_chunks
@@ -9,7 +11,8 @@ from app.services.gemini_service import (
 )
 
 from app.database.mongodb import (
-    messages_collection
+    messages_collection,
+    conversations_collection
 )
 
 async def process_chat(
@@ -17,6 +20,12 @@ async def process_chat(
     current_user,
     user_message
 ):
+
+    if not ObjectId.is_valid(conversation_id) or not await conversations_collection.find_one({
+        "_id": ObjectId(conversation_id),
+        "user_id": current_user["user_id"]
+    }):
+        raise HTTPException(status_code=404, detail="Conversation not found")
 
     # CONVERSATION MEMORY
     previous_messages = []

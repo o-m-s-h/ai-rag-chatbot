@@ -40,9 +40,16 @@ async def upload_document(
     file: UploadFile
 ):
 
+    if not ObjectId.is_valid(conversation_id):
+        raise HTTPException(status_code=404, detail="Conversation not found")
+
     conversation = await conversations_collection.find_one({
-        "_id": ObjectId(conversation_id)
+        "_id": ObjectId(conversation_id),
+        "user_id": current_user["user_id"]
     })
+
+    if not conversation:
+        raise HTTPException(status_code=404, detail="Conversation not found")
 
     existing_docs = conversation.get(
         "documents",
@@ -165,5 +172,6 @@ async def upload_document(
     return {
         "success": True,
         "filename": file.filename,
+        "document": document_data,
         "chunks_stored": len(chunks)
     }

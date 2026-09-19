@@ -1,3 +1,5 @@
+from fastapi import HTTPException
+
 from app.database.mongodb import users_collection
 from app.core.security import hash_password, verify_password
 from app.core.jwt_handler import create_access_token
@@ -9,10 +11,7 @@ async def register_user(data):
     })
 
     if existing_user:
-        return {
-            "success": False,
-            "message": "Email already exists"
-        }
+        raise HTTPException(status_code=409, detail="Email already exists")
 
     hashed_password = hash_password(data.password)
 
@@ -36,10 +35,7 @@ async def login_user(data):
     })
 
     if not user:
-        return {
-            "success": False,
-            "message": "Invalid credentials"
-        }
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
     is_valid = verify_password(
         data.password,
@@ -47,10 +43,7 @@ async def login_user(data):
     )
 
     if not is_valid:
-        return {
-            "success": False,
-            "message": "Invalid credentials"
-        }
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
     token = create_access_token({
         "user_id": str(user["_id"]),
