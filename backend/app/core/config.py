@@ -12,15 +12,13 @@ class Settings(BaseSettings):
 
     ENCRYPTION_KEY: str
 
-    SUPABASE_URL: str
-    SUPABASE_KEY: str
-    SUPABASE_BUCKET: str
-
     CHROMA_API_KEY: str
     CHROMA_TENANT: str
     CHROMA_DATABASE: str
 
     class Config:
         env_file = ".env"
+        # Allow old .env entries, including removed Supabase settings.
+        extra = "ignore"
 
 settings = Settings()

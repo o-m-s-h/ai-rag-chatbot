@@ -17,7 +17,6 @@ python_pptx==1.0.2
 rank_bm25==0.2.2
 redis==7.4.0
 sentence_transformers==3.0.1
-supabase==2.30.0
 uvicorn
 email-validator
 python-multipart

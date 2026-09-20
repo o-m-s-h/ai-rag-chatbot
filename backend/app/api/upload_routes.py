@@ -5,7 +5,7 @@ from fastapi import (
     Depends
 )
 
-import chromadb
+from app.database.chroma_db import collection
 
 from app.services.upload_service import (
     upload_document
@@ -18,15 +18,6 @@ from app.core.dependencies import (
 router = APIRouter(
     prefix="/upload",
     tags=["Upload", "Debug"]
-)
-
-# ChromaDB client
-client = chromadb.PersistentClient(
-    path="./chroma_storage"
-)
-
-collection = client.get_collection(
-    name="rag_collection"
 )
 
 # =========================
@@ -54,11 +45,14 @@ async def upload_file(
 # Debug Route
 # =========================
 @router.get("/debug/chroma")
-async def debug_chroma():
+def debug_chroma(current_user=Depends(get_current_user)):
 
-    data = collection.get()
+    data = collection.get(
+        where={"user_id": current_user["user_id"]},
+        include=["documents"]
+    )
 
     return {
-        "total_chunks": len(data["documents"]),
+        "total_chunks": len(data["ids"]),
         "sample_chunks": data["documents"][:5]
     }

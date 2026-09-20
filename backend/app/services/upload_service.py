@@ -19,13 +19,7 @@ from app.utils.chunking import chunk_text
 from app.utils.text_cleaner import clean_text
 
 from app.services.embedding_service import (
-    generate_embedding
-)
-
-from app.services.supabase_service import (
-    upload_file_to_supabase,
-    download_file_from_supabase,
-    delete_file_from_supabase
+    generate_embeddings
 )
 
 from app.database.chroma_db import collection
@@ -33,6 +27,8 @@ from app.database.chroma_db import collection
 from app.database.mongodb import (
     conversations_collection
 )
+
+CHROMA_BATCH_SIZE = 100
 
 async def upload_document(
     conversation_id,
@@ -67,39 +63,30 @@ async def upload_document(
 
     file_bytes = await file.read()
 
-    supabase_path = upload_file_to_supabase(
-        file.filename,
-        file_bytes
-    )
-
-    downloaded_bytes = download_file_from_supabase(
-        supabase_path
-    )
-
     extension = file.filename.split(".")[-1].lower()
 
     if extension == "pdf":
 
         extracted_text = parse_pdf(
-            downloaded_bytes
+            file_bytes
         )
 
     elif extension == "docx":
 
         extracted_text = parse_docx(
-            downloaded_bytes
+            file_bytes
         )
 
     elif extension == "pptx":
 
         extracted_text = parse_pptx(
-            downloaded_bytes
+            file_bytes
         )
 
     elif extension == "txt":
 
         extracted_text = parse_txt(
-            downloaded_bytes
+            file_bytes
         )
 
     else:
@@ -117,28 +104,20 @@ async def upload_document(
         extracted_text
     )
 
-    for index, chunk in enumerate(chunks):
-
-        embedding = generate_embedding(
-            chunk
-        )
-
-        chunk_id = str(uuid.uuid4())
+    for start in range(0, len(chunks), CHROMA_BATCH_SIZE):
+        batch = chunks[start:start + CHROMA_BATCH_SIZE]
+        embeddings = generate_embeddings(batch)
 
         collection.add(
-
-            ids=[chunk_id],
-
-            embeddings=[embedding],
-
-            documents=[chunk],
-
+            ids=[str(uuid.uuid4()) for _ in batch],
+            embeddings=embeddings,
+            documents=batch,
             metadatas=[{
                 "conversation_id": conversation_id,
                 "user_id": current_user["user_id"],
                 "filename": file.filename,
-                "chunk_index": index
-            }]
+                "chunk_index": start + offset
+            } for offset in range(len(batch))]
         )
 
     document_data = {
@@ -163,10 +142,6 @@ async def upload_document(
                 "documents": document_data
             }
         }
-    )
-
-    delete_file_from_supabase(
-        supabase_path
     )
 
     return {
